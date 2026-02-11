@@ -52,6 +52,12 @@ export function Header() {
             >
               Accessories
             </Link>
+            <Link 
+              to="/seller/signup" 
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Sell
+            </Link>
           </div>
 
           {/* Right side */}
@@ -71,8 +77,15 @@ export function Header() {
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/dashboard" className="cursor-pointer">Dashboard</Link>
+                    <Link to={user.role === 'seller' ? '/seller/dashboard' : '/dashboard'} className="cursor-pointer">
+                      Dashboard
+                    </Link>
                   </DropdownMenuItem>
+                  {user.role !== 'seller' && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/seller/signup" className="cursor-pointer">Become a Seller</Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive">
                     <LogOut className="h-4 w-4 mr-2" />

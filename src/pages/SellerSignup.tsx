@@ -6,16 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/context/AuthContext';
-import { Eye, EyeOff, Loader2, Check } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Check, Store } from 'lucide-react';
 
-export default function Signup() {
+export default function SellerSignup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { signup } = useAuth();
   const navigate = useNavigate();
 
@@ -39,29 +39,32 @@ export default function Signup() {
 
     setIsLoading(true);
 
-    const result = await signup(email, password, name);
-    
+    const result = await signup(email, password, name, 'seller');
+
     if (result.success) {
-      navigate('/dashboard');
+      navigate('/seller/dashboard');
     } else {
       setError(result.error || 'Signup failed');
     }
-    
+
     setIsLoading(false);
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      
+
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-primary/10 mb-4">
+              <Store className="h-7 w-7 text-primary" />
+            </div>
             <h1 className="font-display text-3xl font-medium text-foreground mb-2">
-              Create an account
+              Become a Seller
             </h1>
             <p className="text-muted-foreground">
-              Join us for exclusive access and perks
+              Create your seller account and start listing products
             </p>
           </div>
 
@@ -73,11 +76,11 @@ export default function Signup() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="name">Full name</Label>
+              <Label htmlFor="name">Store / Business Name</Label>
               <Input
                 id="name"
                 type="text"
-                placeholder="John Doe"
+                placeholder="Your store name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -90,7 +93,7 @@ export default function Signup() {
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="seller@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -119,11 +122,11 @@ export default function Signup() {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              
+
               {password && (
                 <div className="mt-3 space-y-2">
                   {passwordRequirements.map((req, index) => (
-                    <div 
+                    <div
                       key={index}
                       className={`flex items-center gap-2 text-sm ${
                         req.met ? 'text-green-600' : 'text-muted-foreground'
@@ -141,10 +144,10 @@ export default function Signup() {
               {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Creating account...
+                  Creating seller account...
                 </>
               ) : (
-                'Create account'
+                'Create Seller Account'
               )}
             </Button>
           </form>
@@ -157,9 +160,9 @@ export default function Signup() {
           </p>
 
           <p className="text-center mt-2 text-muted-foreground">
-            Want to sell products?{' '}
-            <Link to="/seller/signup" className="text-foreground font-medium hover:underline">
-              Sign up as seller
+            Want to shop instead?{' '}
+            <Link to="/signup" className="text-foreground font-medium hover:underline">
+              Sign up as buyer
             </Link>
           </p>
         </div>
