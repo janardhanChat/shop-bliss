@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/product/ProductCard';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductContext';
 
 const Index = () => {
-  const featuredProducts = products.slice(0, 4);
+  const { allProducts } = useProducts();
+  const featuredProducts = allProducts.slice(0, 4);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -35,7 +36,6 @@ const Index = () => {
             </div>
           </div>
           
-          {/* Decorative element */}
           <div className="absolute right-0 top-0 w-1/2 h-full hidden lg:block">
             <div className="absolute inset-0 bg-gradient-to-l from-transparent to-secondary/50" />
             <img

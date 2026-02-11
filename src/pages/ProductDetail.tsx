@@ -4,15 +4,17 @@ import { ChevronLeft, Minus, Plus } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
-import { getProductById, formatPrice, products } from '@/data/products';
+import { formatPrice } from '@/data/products';
 import { ProductCard } from '@/components/product/ProductCard';
 import { useCart } from '@/context/CartContext';
+import { useProducts } from '@/context/ProductContext';
 import { toast } from '@/hooks/use-toast';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { getProductById, allProducts } = useProducts();
   const product = getProductById(id || '');
   
   const [quantity, setQuantity] = useState(1);
@@ -45,7 +47,7 @@ const ProductDetail = () => {
     });
   };
 
-  const relatedProducts = products
+  const relatedProducts = allProducts
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
@@ -55,7 +57,6 @@ const ProductDetail = () => {
       
       <main className="flex-1">
         <div className="container-wide py-8 md:py-12">
-          {/* Breadcrumb */}
           <button 
             onClick={() => navigate(-1)}
             className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
@@ -65,7 +66,6 @@ const ProductDetail = () => {
           </button>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
-            {/* Images */}
             <div className="space-y-4">
               <div className="aspect-square bg-secondary overflow-hidden">
                 <img
@@ -95,7 +95,6 @@ const ProductDetail = () => {
               )}
             </div>
 
-            {/* Details */}
             <div>
               <div className="mb-6">
                 <p className="text-sm text-muted-foreground mb-2">{product.category}</p>
@@ -114,7 +113,6 @@ const ProductDetail = () => {
                 {product.description}
               </p>
 
-              {/* Variants */}
               {product.variants && product.variants.length > 0 && (
                 <div className="space-y-6 mb-8">
                   {product.variants.map((variant) => (
@@ -145,7 +143,6 @@ const ProductDetail = () => {
                 </div>
               )}
 
-              {/* Quantity & Add to Cart */}
               <div className="flex items-center gap-4 mb-8">
                 <div className="flex items-center border border-border">
                   <button
@@ -175,7 +172,6 @@ const ProductDetail = () => {
                 </Button>
               </div>
 
-              {/* Info */}
               <div className="space-y-4 pt-8 border-t border-border">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Availability</span>
@@ -191,7 +187,6 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Related Products */}
           {relatedProducts.length > 0 && (
             <section className="mt-20 pt-16 border-t border-border">
               <h2 className="font-display text-2xl font-medium mb-8">You May Also Like</h2>

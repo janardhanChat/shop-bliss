@@ -1,9 +1,12 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+export type UserRole = 'buyer' | 'seller';
+
 export interface User {
   id: string;
   email: string;
   name: string;
+  role: UserRole;
   createdAt: string;
 }
 
@@ -11,7 +14,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  signup: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
+  signup: (email: string, password: string, name: string, role?: UserRole) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
 }
 
@@ -25,7 +28,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
     const savedUser = localStorage.getItem(CURRENT_USER_KEY);
     if (savedUser) {
       setUser(JSON.parse(savedUser));
@@ -59,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { success: true };
   };
 
-  const signup = async (email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> => {
+  const signup = async (email: string, password: string, name: string, role: UserRole = 'buyer'): Promise<{ success: boolean; error?: string }> => {
     const users = getUsers();
     const emailLower = email.toLowerCase();
 
@@ -71,6 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: crypto.randomUUID(),
       email: emailLower,
       name,
+      role,
       createdAt: new Date().toISOString(),
     };
 

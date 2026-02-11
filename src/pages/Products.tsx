@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/product/ProductCard';
-import { products, categories } from '@/data/products';
+import { useProducts } from '@/context/ProductContext';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -14,11 +14,12 @@ const Products = () => {
   const categoryParam = searchParams.get('category') || 'All';
   const [selectedCategory, setSelectedCategory] = useState(categoryParam);
   const [sortBy, setSortBy] = useState<SortOption>('featured');
+  const { allProducts, categories } = useProducts();
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = selectedCategory === 'All' 
-      ? products 
-      : products.filter(p => p.category === selectedCategory);
+      ? allProducts 
+      : allProducts.filter(p => p.category === selectedCategory);
 
     switch (sortBy) {
       case 'price-asc':
@@ -30,7 +31,7 @@ const Products = () => {
       default:
         return filtered;
     }
-  }, [selectedCategory, sortBy]);
+  }, [selectedCategory, sortBy, allProducts]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
@@ -48,7 +49,6 @@ const Products = () => {
       
       <main className="flex-1">
         <div className="container-wide py-8 md:py-12">
-          {/* Page Header */}
           <div className="mb-8">
             <h1 className="font-display text-3xl md:text-4xl font-medium">
               {selectedCategory === 'All' ? 'All Products' : selectedCategory}
@@ -58,9 +58,7 @@ const Products = () => {
             </p>
           </div>
 
-          {/* Filters */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-6 border-b border-border">
-            {/* Categories */}
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
                 <Button
@@ -74,7 +72,6 @@ const Products = () => {
               ))}
             </div>
 
-            {/* Sort */}
             <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
               <SelectTrigger className="w-[160px]">
                 <SelectValue placeholder="Sort by" />
@@ -88,7 +85,6 @@ const Products = () => {
             </Select>
           </div>
 
-          {/* Product Grid */}
           {filteredAndSortedProducts.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
               {filteredAndSortedProducts.map((product) => (

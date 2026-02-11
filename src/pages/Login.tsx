@@ -19,7 +19,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const from = (location.state as { from?: string })?.from || '/dashboard';
+  const from = (location.state as { from?: string })?.from;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +29,11 @@ export default function Login() {
     const result = await login(email, password);
     
     if (result.success) {
-      navigate(from, { replace: true });
+      // Redirect sellers to seller dashboard, buyers to buyer dashboard
+      const users = JSON.parse(localStorage.getItem('minimal_users') || '{}');
+      const userRecord = users[email.toLowerCase()];
+      const destination = from || (userRecord?.user?.role === 'seller' ? '/seller/dashboard' : '/dashboard');
+      navigate(destination, { replace: true });
     } else {
       setError(result.error || 'Login failed');
     }
